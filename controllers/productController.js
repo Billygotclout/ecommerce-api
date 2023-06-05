@@ -76,10 +76,24 @@ const deleteProduct = async (req, res) => {
     message: "Successfully Deleted Product",
   });
 };
+const searchProduct= async(req,res)=>{
+const keywords = req.query.keywords;
+const regex = new RegExp(keywords, 'i');
+const product = await Product.find({title: regex})
+if (!product) {
+    res.status(500).json({
+        error:"Couldn't find product"
+    })
+}
+res.status(200).json(product);
+
+}
+
 module.exports = {
   getProducts,
   createProduct,
   getProduct,
   updateProduct,
   deleteProduct,
+  searchProduct
 };
