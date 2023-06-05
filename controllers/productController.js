@@ -2,8 +2,8 @@ const Product = require("../models/Product");
 const cloudinary = require("cloudinary").v2
 cloudinary.config({
     cloud_name: "dgmd8bmgm",
-    api_key: "531413739596561",
-    api_secret: "lcrxXf94dJTBCdYQ7qH3Lr7El-c"
+    api_key: `${process.env.CLOUDINARY_API_KEY}`,
+    api_secret: `${process.env.CLOUDINARY_SECRET_KEY}`
   });
 const getProducts = async (req, res) => {
   const product = await Product.find({ user_id: req.user.id });
