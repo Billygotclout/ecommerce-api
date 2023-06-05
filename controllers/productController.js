@@ -1,27 +1,42 @@
 const Product = require("../models/Product");
-
+const cloudinary = require("cloudinary").v2
+cloudinary.config({
+    cloud_name: "dgmd8bmgm",
+    api_key: "531413739596561",
+    api_secret: "lcrxXf94dJTBCdYQ7qH3Lr7El-c"
+  });
 const getProducts = async (req, res) => {
   const product = await Product.find({ user_id: req.user.id });
   res
     .status(201)
     .json({ message: "Products Succesfully Fetched", data: product });
 };
-const createProduct = async (req, res) => {
+const createProduct =  async(req, res) => {
   const { title, description, price } = req.body;
   if (!title || !description || !price) {
     res.status(400);
     throw new Error("All fields are required");
   }
-  const product = await Product.create({
-    user_id: req.user.id,
-    title,
-    description,
-    price,
-  });
-  res.status(201).json({
-    message: "Product successfully created",
-    data: product,
-  });
+  try {
+   const result= await cloudinary.uploader.upload(req.file.path)
+      const image=  result.secure_url
+        const product = await Product.create({
+            user_id: req.user.id,
+            title,
+            description,
+            price,
+            image,
+          });
+          res.status(201).json({
+            message: "Product successfully created",
+            data: product,
+          });
+  
+  } catch (error) {
+    console.log(error);
+  }
+
+
 };
 const getProduct = async (req, res) => {
   try {

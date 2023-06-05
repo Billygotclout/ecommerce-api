@@ -52,7 +52,7 @@ const login = asyncHandler(async (req, res) => {
         },
       },
       process.env.TOKEN_SECRET,
-      { expiresIn: "15m" }
+      { expiresIn: "2h" }
     );
     res.status(200).json({
       message: "User successfully logged in",
