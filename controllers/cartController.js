@@ -1,7 +1,8 @@
 const Product = require("../models/Product");
-let cartItems = [];
+
 
 const addToCart = async (req, res) => {
+ 
   const newItem = await Product.findById(req.params.id);
   cartItems.push(newItem);
 
