@@ -36,7 +36,8 @@ const register = asyncHandler(async (req, res) => {
   }
 });
 const login = asyncHandler(async (req, res) => {
-  const { username, password } = req.body;
+  try {
+    const { username, password } = req.body;
   if (!username || !password) {
     res.status(400);
     throw new Error("All fields are required");
@@ -44,16 +45,8 @@ const login = asyncHandler(async (req, res) => {
   const user = await User.findOne({ username });
 
   if (username && bcrypt.compareSync(password, user.password)) {
-    const accessToken = jwt.sign(
-      {
-        user: {
-          username: user.username,
-          password: user.password,
-          id: user.id,
-        },
-      },
-      process.env.TOKEN_SECRET,
-      { expiresIn: "2h" }
+    const accessToken = jwt.sign({user}, process.env.TOKEN_SECRET,
+      { expiresIn: "6h" }
     );
     res.status(200).json({
       message: "User successfully logged in",
@@ -69,6 +62,10 @@ const login = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("User not found");
   }
+  } catch (error) {
+    console.log(error);
+  }
+  
 });
 const currentUser = (req, res) => {
   try {
