@@ -43,7 +43,7 @@ const login = asyncHandler(async (req, res) => {
     throw new Error("All fields are required");
   }
   const user = await User.findOne({ username });
-
+  
   if (username && bcrypt.compareSync(password, user.password)) {
     const accessToken = jwt.sign({user}, process.env.TOKEN_SECRET,
       { expiresIn: "6h" }
