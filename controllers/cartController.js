@@ -19,12 +19,21 @@ const viewCart = async (req, res) => {
 };
 
 const deleteCart = async (req, res) => {
-  const itemId = await Product.findById(req.params.id);
+ try {
+  const user = await User.findOne({ _id: req.user.id });
 
-  const user = await User.findById(req.user.id);
+  // const product = await Product.findOne({ _id: req.params.id });
+  
 
-  user.cart.pull({ _id: req.params.id });
+  user.cart = user.cart.filter((item) => item._id != req.params.id );
+
+ 
+  await user.save();
   res.status(200).json({ message: "Item removed from cart" });
+ } catch (error) {
+  console.log(error);
+ }
+
 };
 
 module.exports = { addToCart, viewCart, deleteCart };
