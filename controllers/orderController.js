@@ -2,7 +2,7 @@ const Order = require("../models/Order");
 const Product = require("../models/Product");
 
 const viewOrders = async (req, res) => {
-  const order = await Order.find({ user_id: req.user._id }).populate({
+  const order = await Order.find({ user_id: req.user.id }).populate({
     path: "product_id",
     model: "Product",
   });
@@ -11,7 +11,7 @@ const viewOrders = async (req, res) => {
 const createOrder = async (req, res) => {
   const { product_id } = req.body;
   const createdOrder = await Order.create({
-    user_id: req.user._id,
+    user_id: req.user.id,
     product_id,
   });
   if (!createdOrder) {
@@ -29,7 +29,7 @@ const deleteOrder = async (req, res) => {
     res.status(404);
     throw new Error("order not found");
   }
-  if (order.user_id.toString() !== req.user._id) {
+  if (order.user_id.toString() !== req.user.id) {
     res.status(403);
     throw new Error("NOT ALLOWED");
   }

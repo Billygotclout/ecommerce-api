@@ -5,6 +5,7 @@ const { getProducts, createProduct, getProduct, updateProduct, deleteProduct, se
 const { addToCart, viewCart, deleteCart } = require("../controllers/cartController");
 const multer = require("multer");
 const  pay  = require("../controllers/paymentController");
+const { addToWishlist, viewWishlist } = require("../controllers/wishlistController");
 const router = express.Router()
 const upload = multer({ dest: "uploads/" });
 
@@ -21,6 +22,8 @@ router.route("/view-cart").get(viewCart)
 router.route("/delete-cart/:id").delete(deleteCart)
 router.route("/search").get(searchProduct)
 router.route("/pay").post(pay)
+router.route("/add-to-wishlist/:id").post(addToWishlist);
+router.route("/view-wishlist").get(viewWishlist);
 
 
 module.exports=router;

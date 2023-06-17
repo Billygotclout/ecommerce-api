@@ -6,14 +6,12 @@ cloudinary.config({
     api_secret: `${process.env.CLOUDINARY_SECRET_KEY}`
   });
 const getProducts = async (req, res) => {
-  const product = await Product.find({ user_id: req.user._id });
+  const product = await Product.find({ user_id: req.user.id });
   res
     .status(201)
     .json({ message: "Products Succesfully Fetched", data: product });
 };
 const createProduct =  async(req, res) => {
-
- 
   try {
     const { title, description, price } = req.body;
     if (!title || !description || !price) {
@@ -23,7 +21,7 @@ const createProduct =  async(req, res) => {
    const result= await cloudinary.uploader.upload(req.file.path)
       const image=  result.secure_url
         const product = await Product.create({
-            user_id: req.user._id,
+            user_id: req.user.id,
             title,
             description,
             price,
@@ -63,7 +61,7 @@ const updateProduct = async (req, res) => {
     res.status(404);
     throw new Error("product not found");
   }
-  if (product.user_id.toString() !== req.user._id) {
+  if (product.user_id.toString() !== req.user.id) {
     res.status(403);
     throw new Error("NOT ALLOWED");
   }
@@ -84,7 +82,7 @@ const deleteProduct = async (req, res) => {
     res.status(404);
     throw new Error("product not found");
   }
-  if (product.user_id.toString() !== req.user._id) {
+  if (product.user_id.toString() !== req.user.id) {
     res.status(403);
     throw new Error("NOT ALLOWED");
   }

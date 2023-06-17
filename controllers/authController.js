@@ -45,7 +45,13 @@ const login = asyncHandler(async (req, res) => {
   const user = await User.findOne({ username });
   
   if (username && bcrypt.compareSync(password, user.password)) {
-    const accessToken = jwt.sign({user}, process.env.TOKEN_SECRET,
+    const accessToken = jwt.sign({
+      user:{
+        username: user.username,
+        password: user.password,
+        id: user.id,
+      }
+    }, process.env.TOKEN_SECRET,
       { expiresIn: "6h" }
     );
     res.status(200).json({
@@ -67,18 +73,19 @@ const login = asyncHandler(async (req, res) => {
   }
   
 });
-const currentUser = (req, res) => {
+const currentUser = async(req, res) => {
   try {
+    const user = await User.findById(req.user.id)
     res
       .status(200)
-      .json({ message: "User Successfully fetched", data: req.user });
+      .json({ message: "User Successfully fetched", data: user });
   } catch (error) {
     console.log(error);
   }
 };
 const forgotPassword = async(req, res) => {
   function generateToken(payload) {
-    return jwt.sign(payload, "your-secret-key", { expiresIn: "1h" });
+    return jwt.sign(payload, process.env.TOKEN_SECRET, { expiresIn: "1h" });
   }
 
   // Function to send password reset email
@@ -117,7 +124,7 @@ const forgotPassword = async(req, res) => {
 const resetPassword=async (req,res)=>{
     try {
         const{token, newPassword}= req.body;
-jwt.verify(token, 'your-secret-key', async (err, decoded) => {
+jwt.verify(token, process.env.TOKEN_SECRET, async (err, decoded) => {
     if (err) {
       console.error(err);
       res.status(400).json({ message: 'Invalid or expired token' });
@@ -126,8 +133,7 @@ jwt.verify(token, 'your-secret-key', async (err, decoded) => {
       const { email } = decoded;
       const hashedPassword = bcrypt.hashSync(newPassword, 10);
       
-      // Save the new password to your database
-      // ...
+      
       const user = await User.findOneAndUpdate({email},{password:hashedPassword}, {new:true})
       if (!user) {
         return res.status(404).json({ message: 'User not found' });

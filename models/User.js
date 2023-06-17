@@ -23,7 +23,8 @@ const UserSchema = mongoose.Schema({
         type:String,
         required: [true, "Please enter password"]
     },
-    cart:[]
+    cart:[],
+    wishlist:[]
 })
 
 module.exports=mongoose.model("User", UserSchema)
