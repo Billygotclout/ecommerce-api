@@ -8,7 +8,9 @@ const PORT = process.env.PORT ||5003;
 
 dbConnection()
 app.use(express.json())
-
+app.route("/").get((req,res)=>{
+    res.send("APP is running")
+});
 app.use("/api/auth", require("./routes/userRoute"))
 app.use("/api/product", require("./routes/productRoute"))
 app.use("/api/orders", require("./routes/orderRoutes"))
