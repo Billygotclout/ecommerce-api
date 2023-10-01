@@ -4,8 +4,9 @@ const dbConnection = require("./config/dbconnect");
 const dotenv = require("dotenv").config();
 
 const app = express();
-const PORT = process.env.PORT || 5003;
-
+const env = process.env.NODE_ENV || "development";
+const config = require(`./config/config.${env}`);
+const port = config.port;
 dbConnection();
 app.route("/").get((req, res) => {
   res.send("APP is running");
@@ -16,6 +17,6 @@ app.use("/api/auth", require("./routes/userRoute"));
 app.use("/api/product", require("./routes/productRoute"));
 app.use("/api/orders", require("./routes/orderRoutes"));
 
-app.listen(PORT, () => {
-  console.log(`Server is listening on http://localhost:${PORT}`);
+app.listen(port, () => {
+  console.log(`Server is listening on http://localhost:${port}`);
 });
