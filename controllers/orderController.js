@@ -23,15 +23,17 @@ const createOrder = async (req, res) => {
     .json({ message: "Order Successfully Created", data: createdOrder });
 };
 const deleteOrder = async (req, res) => {
-  const order = await Order.findById(req.params.id)
+  const order = await Order.findById(req.params.id);
 
   if (!order) {
     res.status(404);
-    throw new Error("order not found");
+    throw new Error("Sorry, we couldn't find that order");
   }
   if (order.user_id.toString() !== req.user.id) {
     res.status(403);
-    throw new Error("NOT ALLOWED");
+    throw new Error(
+      "Please contact your administrator for access permissions."
+    );
   }
   await Order.deleteOne({ _id: req.params.id });
   res.status(200).json({
