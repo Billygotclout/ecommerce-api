@@ -9,11 +9,7 @@ const {
   deleteProduct,
   searchProduct,
 } = require("../controllers/productController");
-const {
-  addToCart,
-  viewCart,
-  deleteCart,
-} = require("../controllers/cartController");
+
 const multer = require("multer");
 const pay = require("../controllers/paymentController");
 const {
@@ -30,9 +26,6 @@ router.post("/create-product", upload.single("image"), createProduct);
 router.route("/get-product/:id").get(getProduct);
 router.route("/update-product/:id").put(updateProduct);
 router.route("/delete-product/:id").delete(deleteProduct);
-router.route("/add-to-cart").post(addToCart);
-router.route("/view-cart").get(viewCart);
-router.route("/delete-cart/:id").delete(deleteCart);
 router.route("/search").get(searchProduct);
 router.route("/pay").post(pay);
 router.route("/add-to-wishlist/:id").post(addToWishlist);

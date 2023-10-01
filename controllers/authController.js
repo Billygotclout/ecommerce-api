@@ -3,18 +3,20 @@ const User = require("../models/User");
 const asyncHandler = require("express-async-handler");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
+const { userSchema } = require("../helpers/validation");
+const CustomError = require("../utils/CustomError");
 const dotenv = require("dotenv").config();
 const register = asyncHandler(async (req, res) => {
   try {
     const { firstName, lastName, username, email, password } = req.body;
-    if (!firstName || !lastName || !username || !email || !password) {
-      res.status(400);
-      throw new Error("All fields are required");
+    const { error } = userSchema.validate(req.body, { abortEarly: false });
+    if (error) {
+      throw new CustomError(error.details[0].message, 400);
     }
+
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      res.status(400);
-      throw new Error("User already exists, please login");
+      throw new CustomError("User already exist", 400);
     }
     const hashPassword = await bcrypt.hash(password, 10);
 
@@ -37,37 +39,34 @@ const register = asyncHandler(async (req, res) => {
 const login = asyncHandler(async (req, res) => {
   try {
     const { username, password } = req.body;
-    if (!username || !password) {
-      res.status(400);
-      throw new Error("All fields are required");
-    }
+
     const user = await User.findOne({ username });
-
-    if (username && bcrypt.compareSync(password, user.password)) {
-      const accessToken = jwt.sign(
-        {
-          user: {
-            username: user.username,
-            password: user.password,
-            id: user.id,
+    if (user) {
+      if (await bcrypt.compareSync(password, user.password)) {
+        const accessToken = jwt.sign(
+          {
+            user: {
+              username: user.username,
+              password: user.password,
+              id: user.id,
+            },
           },
-        },
-        process.env.TOKEN_SECRET,
-        { expiresIn: "6h" }
-      );
-      res.status(200).json({
-        message: "User successfully logged in",
-        token: accessToken,
-        data: user,
-      });
+          process.env.TOKEN_SECRET,
+          { expiresIn: "5h" }
+        );
+        res.status(200).json({
+          message: "User successfully logged in",
+          token: accessToken,
+          data: user,
+        });
+      } else {
+        throw new CustomError(
+          "Please double-check your password and try again",
+          400
+        );
+      }
     } else {
-      res.status(400);
-      throw new Error("Username or Password is incorrect");
-    }
-
-    if (!user) {
-      res.status(404);
-      throw new Error("User not found");
+      throw new CustomError("Sorry we couldn't find that user", 404);
     }
   } catch (error) {
     console.log(error);
