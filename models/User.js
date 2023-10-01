@@ -23,7 +23,11 @@ const UserSchema = mongoose.Schema({
     type: String,
     required: [true, "Please enter password"],
   },
-
+  role: {
+    type: String,
+    enum: ["user", "admin"],
+    default: "user",
+  },
   wishlist: [],
 });
 
