@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { userSchema } = require("../helpers/validation");
 
 const UserSchema = mongoose.Schema({
   firstName: {
@@ -26,4 +27,9 @@ const UserSchema = mongoose.Schema({
   wishlist: [],
 });
 
+UserSchema.set("toJSON", {
+  transform: function (doc, ret) {
+    delete ret.password;
+  },
+});
 module.exports = mongoose.model("User", UserSchema);

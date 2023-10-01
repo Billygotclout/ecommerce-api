@@ -47,7 +47,7 @@ const getProduct = async (req, res) => {
 
     if (!product) {
       res.status(404);
-      throw new Error("product not found");
+      throw new Error("Sorry, we couldn't find that product.");
     }
     res.status(200).json({
       message: "Success",
@@ -62,11 +62,13 @@ const updateProduct = async (req, res) => {
 
   if (!product) {
     res.status(404);
-    throw new Error("product not found");
+    throw new Error("Sorry, we couldn't find that product.");
   }
   if (product.user_id.toString() !== req.user.id) {
     res.status(403);
-    throw new Error("NOT ALLOWED");
+    throw new Error(
+      "Please contact your administrator for access permissions."
+    );
   }
   const updatedProduct = await Product.findByIdAndUpdate(
     req.params.id,
@@ -83,11 +85,13 @@ const deleteProduct = async (req, res) => {
 
   if (!product) {
     res.status(404);
-    throw new Error("product not found");
+    throw new Error("Sorry, we couldn't find that product.");
   }
   if (product.user_id.toString() !== req.user.id) {
     res.status(403);
-    throw new Error("NOT ALLOWED");
+    throw new Error(
+      "Please contact your administrator for access permissions."
+    );
   }
   await Product.deleteOne({ _id: req.params.id });
   res.status(200).json({
