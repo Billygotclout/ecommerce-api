@@ -1,4 +1,4 @@
-# ecommerce-api
+# Ecommerce-api
 
 Welcome to the E-Commerce! This API is designed to provide a seamless experience for frontend developers who are building e-commerce applications. It offers a range of functionalities to help you create engaging and feature-rich online stores.
 
