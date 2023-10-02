@@ -85,12 +85,9 @@ const forgotPassword = async (req, res) => {
   function generateToken(payload) {
     return jwt.sign(payload, process.env.TOKEN_SECRET, { expiresIn: "1h" });
   }
-
   const { email } = req.body;
-
   // Generate a JWT token for password reset
   const resetToken = generateToken({ email });
-
   // Send the password reset link to the user's email
   const sendPasswordMail = await sendMail(
     email,
