@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 const { userSchema } = require("../helpers/validation");
 const CustomError = require("../utils/CustomError");
+const sendMail = require("../helpers/mailer");
 const dotenv = require("dotenv").config();
 const register = asyncHandler(async (req, res) => {
   try {
@@ -85,37 +86,19 @@ const forgotPassword = async (req, res) => {
     return jwt.sign(payload, process.env.TOKEN_SECRET, { expiresIn: "1h" });
   }
 
-  // Function to send password reset email
-  function sendPasswordResetEmail(email, resetToken) {
-    const transporter = nodemailer.createTransport({
-      // Set up your email provider configuration
-      // ...
-      service: "gmail",
-      auth: {
-        user: "demsdems28@gmail.com",
-        pass: `${process.env.GMAIL_PASS}`,
-      },
-    });
-
-    const mailOptions = {
-      from: "demsdems28@gmail.com",
-      to: email,
-      subject: "Password Reset",
-      text: `Please click the following link to reset your password: ${resetToken}`,
-    };
-
-    return transporter.sendMail(mailOptions);
-  }
-
   const { email } = req.body;
 
   // Generate a JWT token for password reset
   const resetToken = generateToken({ email });
 
   // Send the password reset link to the user's email
-  const sendMail = await sendPasswordResetEmail(email, resetToken);
+  const sendPasswordMail = await sendMail(
+    email,
+    "Password Reset",
+    `Please click the following link to reset your password: ${resetToken}`
+  );
 
-  res.json({ message: "Password reset email sent", data: sendMail });
+  res.json({ message: "Password reset email sent", data: sendPasswordMail });
 };
 const resetPassword = async (req, res) => {
   try {
