@@ -52,8 +52,7 @@ const login = asyncHandler(async (req, res) => {
               id: user.id,
             },
           },
-          process.env.TOKEN_SECRET,
-          { expiresIn: "5h" }
+          process.env.TOKEN_SECRET
         );
         res.status(200).json({
           message: "User successfully logged in",
