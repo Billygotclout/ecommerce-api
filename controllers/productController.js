@@ -9,7 +9,7 @@ cloudinary.config({
 const getProducts = async (req, res) => {
   const product = await Product.find({ user_id: req.user.id });
   res
-    .status(201)
+    .status(200)
     .json({ message: "Products Succesfully Fetched", data: product });
 };
 const createProduct = async (req, res) => {
@@ -21,7 +21,7 @@ const createProduct = async (req, res) => {
     }
     const result = await cloudinary.uploader.upload(req.file.path);
     // remove file from server
-    fs.unlink("uploads", (err) => {
+    fs.unlink(`${req.file.path}`, (err) => {
       if (err) console.log(err);
     });
 
