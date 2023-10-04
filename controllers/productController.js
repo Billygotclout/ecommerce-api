@@ -50,7 +50,7 @@ const getProduct = async (req, res) => {
       throw new Error("Sorry, we couldn't find that product.");
     }
     res.status(200).json({
-      message: "Success",
+      message: "Product successfully fetched",
       data: product,
     });
   } catch (error) {

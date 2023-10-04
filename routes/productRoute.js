@@ -24,7 +24,7 @@ router.use(validateToken);
 router.route("/get-products").get(getProducts);
 router.post("/create-product", upload.single("image"), createProduct);
 router.route("/get-product/:id").get(getProduct);
-router.route("/update-product/:id").put(updateProduct);
+router.route("/update-product/:id").patch(updateProduct);
 router.route("/delete-product/:id").delete(deleteProduct);
 router.route("/search").get(searchProduct);
 router.route("/pay").post(pay);

@@ -17,7 +17,7 @@ const register = asyncHandler(async (req, res) => {
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      throw new CustomError("User already exist", 400);
+      throw new CustomError("User already existS, please log in", 400);
     }
     const hashPassword = await bcrypt.hash(password, 10);
 
