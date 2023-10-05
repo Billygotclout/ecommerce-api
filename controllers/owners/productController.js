@@ -1,4 +1,4 @@
-const Product = require("../models/Product");
+const Product = require("../../models/Product");
 const cloudinary = require("cloudinary").v2;
 const fs = require("fs");
 cloudinary.config({
@@ -14,7 +14,7 @@ const getProducts = async (req, res) => {
 };
 const createProduct = async (req, res) => {
   try {
-    const { title, description, price } = req.body;
+    const { title, description, price, category } = req.body;
     if (!title || !description || !price) {
       res.status(400);
       throw new Error("All fields are required");
@@ -32,6 +32,7 @@ const createProduct = async (req, res) => {
       description,
       price,
       image,
+      category,
     });
     res.status(201).json({
       message: "Product successfully created",

@@ -37,14 +37,14 @@ describe("Products routes activity", () => {
   }, 30000);
   it("Should get a particular product", async () => {
     const response = await request(app)
-      .get(`/api/product/get-product/651c4e4d2dda7d52b92bef9f`)
+      .get(`/api/product/get-product/651d3dd0e817820e7d12ce8f`)
       .set("Authorization", `Bearer ${token}`);
     expect(response.status).toBe(200);
     expect(response.body.message).toBe("Product successfully fetched");
   }, 30000);
   it("Should update a particular product", async () => {
     const response = await request(app)
-      .patch("/api/product/update-product/651c4e4d2dda7d52b92bef9f")
+      .patch("/api/product/update-product/651d3dd0e817820e7d12ce8f")
       .send({
         title: "Ope",
       })
@@ -54,7 +54,7 @@ describe("Products routes activity", () => {
   }, 30000);
   it("Should update a delete product", async () => {
     const response = await request(app)
-      .delete("/api/product/delete-product/651c4e4d2dda7d52b92bef9f")
+      .delete("/api/product/delete-product/651d3dd0e817820e7d12ce8f")
       .set("Authorization", `Bearer ${token}`);
     expect(response.status).toBe(200);
     expect(response.body.message).toBe("Successfully Deleted Product");
