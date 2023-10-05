@@ -2,10 +2,9 @@ const mongoose = require("mongoose");
 
 const productSchema = mongoose.Schema({
   user_id: {
-   
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
-    required:true
+    required: true,
   },
   title: {
     type: String,
@@ -22,5 +21,9 @@ const productSchema = mongoose.Schema({
   image: {
     type: String,
   },
+  category: {
+    type: String,
+    required: true,
+  },
 });
-module.exports=mongoose.model("Product", productSchema)
+module.exports = mongoose.model("Product", productSchema);

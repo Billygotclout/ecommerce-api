@@ -8,7 +8,7 @@ const {
   updateProduct,
   deleteProduct,
   searchProduct,
-} = require("../controllers/productController");
+} = require("../controllers/owners/productController");
 
 const multer = require("multer");
 const pay = require("../controllers/paymentController");
@@ -16,9 +16,16 @@ const {
   addToWishlist,
   viewWishlist,
 } = require("../controllers/wishlistController");
+const {
+  getAllProducts,
+  filterProducts,
+} = require("../controllers/customers/customersController");
 const router = express.Router();
 const upload = multer({ dest: "uploads/" });
 
+router.route("/get-all-products").get(getAllProducts);
+router.route("/filter").get(filterProducts);
+router.route("/view-wishlist").get(viewWishlist);
 router.use(validateToken);
 
 router.route("/get-products").get(getProducts);
@@ -29,6 +36,5 @@ router.route("/delete-product/:id").delete(deleteProduct);
 router.route("/search").get(searchProduct);
 router.route("/pay").post(pay);
 router.route("/add-to-wishlist/:id").post(addToWishlist);
-router.route("/view-wishlist").get(viewWishlist);
 
 module.exports = router;

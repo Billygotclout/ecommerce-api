@@ -11,6 +11,11 @@ const orderSchema = mongoose.Schema({
     required: true,
     ref: "Product",
   },
+  status: {
+    type: String,
+    enum: ["pending", "confirmed", "shipped", "delivered"],
+    default: "pending",
+  },
 });
 
 module.exports = mongoose.model("Order", orderSchema);
