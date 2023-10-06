@@ -11,11 +11,11 @@ const {
 } = require("../controllers/owners/productController");
 
 const multer = require("multer");
-const pay = require("../controllers/paymentController");
+const pay = require("../controllers/customers/paymentController");
 const {
   addToWishlist,
   viewWishlist,
-} = require("../controllers/wishlistController");
+} = require("../controllers/customers/wishlistController");
 const {
   getAllProducts,
   filterProducts,
