@@ -66,7 +66,7 @@ describe("Products routes activity", () => {
     expect(response.status).toBe(200);
     expect(response.body.message).toBe("Successfully Updated Product");
   }, 30000);
-  it("Should delete aq product", async () => {
+  it("Should delete a product", async () => {
     const response = await request(app)
       .delete(`/api/product/delete-product/${productId}`)
       .set("Authorization", `Bearer ${token}`);
