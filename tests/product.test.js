@@ -2,9 +2,8 @@ const mongoose = require("mongoose");
 const app = require("../app");
 const request = require("supertest");
 const path = require("path");
-const token =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXJuYW1lIjoiYmdjIiwicGFzc3dvcmQiOiIkMmIkMTAkdVdZQ2dHN3c2QUpYNXRqeC5FTi5vLjFZLzhUYmNyeHZ2U1dZLmNMZkg2bjlYa3d6LzZib0MiLCJpZCI6IjY1MTlhZTU2MzcwMGU3NjQ0ZjYzY2U5NiJ9LCJpYXQiOjE2OTYzNTE3MDN9.s6-l_mJm9PLj1mYO-yWCQpYisR4P2y6MbTGrrjfqrDU";
-
+let token;
+let productId;
 const pathh = path.join(__dirname, "/err.png");
 beforeAll(async () => {
   await mongoose.connect(process.env.DB_CONNECTION_STRING, {
@@ -14,6 +13,19 @@ beforeAll(async () => {
 }, 30000);
 afterAll(async () => {
   await mongoose.disconnect();
+});
+beforeEach(async () => {
+  const payload = {
+    username: "bgc",
+    password: "tols56789",
+  };
+
+  const response = await request(app).post("/api/auth/login").send(payload);
+
+  expect(response.status).toBe(200);
+  expect(response.body.token).toBeDefined();
+
+  token = response.body.token;
 });
 
 describe("Products routes activity", () => {
@@ -30,21 +42,23 @@ describe("Products routes activity", () => {
       .field("title", "Demilade")
       .field("description", "clout chase")
       .field("price", "50000")
+      .field("category", "food")
       .attach("image", pathh)
       .set("Authorization", `Bearer ${token}`);
     expect(response.status).toBe(201);
     expect(response.body.message).toBe("Product successfully created");
+    productId = response.body.data._id;
   }, 30000);
   it("Should get a particular product", async () => {
     const response = await request(app)
-      .get(`/api/product/get-product/651d3dd0e817820e7d12ce8f`)
+      .get(`/api/product/get-product/${productId}`)
       .set("Authorization", `Bearer ${token}`);
     expect(response.status).toBe(200);
     expect(response.body.message).toBe("Product successfully fetched");
   }, 30000);
   it("Should update a particular product", async () => {
     const response = await request(app)
-      .patch("/api/product/update-product/651d3dd0e817820e7d12ce8f")
+      .patch(`/api/product/update-product/${productId}`)
       .send({
         title: "Ope",
       })
@@ -52,9 +66,9 @@ describe("Products routes activity", () => {
     expect(response.status).toBe(200);
     expect(response.body.message).toBe("Successfully Updated Product");
   }, 30000);
-  it("Should update a delete product", async () => {
+  it("Should delete aq product", async () => {
     const response = await request(app)
-      .delete("/api/product/delete-product/651d3dd0e817820e7d12ce8f")
+      .delete(`/api/product/delete-product/${productId}`)
       .set("Authorization", `Bearer ${token}`);
     expect(response.status).toBe(200);
     expect(response.body.message).toBe("Successfully Deleted Product");
