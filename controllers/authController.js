@@ -7,9 +7,9 @@ const { userSchema } = require("../helpers/validation");
 const CustomError = require("../utils/CustomError");
 const sendMail = require("../helpers/mailer");
 const dotenv = require("dotenv").config();
-const register = asyncHandler(async (req, res) => {
+const register = asyncHandler(async (req, res, next) => {
   try {
-    const { firstName, lastName, username, email, password } = req.body;
+    const { firstName, lastName, username, email, password, role } = req.body;
     const { error } = userSchema.validate(req.body, { abortEarly: false });
     if (error) {
       throw new CustomError(error.details[0].message, 400);
@@ -17,7 +17,7 @@ const register = asyncHandler(async (req, res) => {
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      throw new CustomError("User already existS, please log in", 400);
+      throw new CustomError("User already exists, please log in", 400);
     }
     const hashPassword = await bcrypt.hash(password, 10);
 
@@ -27,6 +27,7 @@ const register = asyncHandler(async (req, res) => {
       username,
       email,
       password: hashPassword,
+      role,
     });
 
     res.status(201).json({
@@ -34,7 +35,7 @@ const register = asyncHandler(async (req, res) => {
       data: user,
     });
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 });
 const login = asyncHandler(async (req, res) => {
