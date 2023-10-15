@@ -20,6 +20,7 @@ const {
   getAllProducts,
   filterProducts,
 } = require("../controllers/customers/customersController");
+const roleChecker = require("../middleware/roleChecker");
 const router = express.Router();
 const upload = multer({ dest: "uploads/" });
 
@@ -31,10 +32,11 @@ router.use(validateToken);
 router.route("/get-products").get(getProducts);
 router.post("/create-product", upload.single("image"), createProduct);
 router.route("/get-product/:id").get(getProduct);
-router.route("/update-product/:id").patch(updateProduct);
-router.route("/delete-product/:id").delete(deleteProduct);
 router.route("/search").get(searchProduct);
 router.route("/pay").post(pay);
 router.route("/add-to-wishlist/:id").post(addToWishlist);
+router.use(roleChecker("admin"));
+router.route("/update-product/:id").patch(updateProduct);
+router.route("/delete-product/:id").delete(deleteProduct);
 
 module.exports = router;
