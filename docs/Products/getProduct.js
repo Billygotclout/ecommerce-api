@@ -1,7 +1,7 @@
-const updateProduct = {
+const getProduct = {
   tags: ["Products"],
-  description: "Update products",
-  operationId: "updateProducts",
+  description: "Get products",
+  operationId: "getProducts",
   security: [
     {
       bearerAuth: [],
@@ -14,5 +14,4 @@ const updateProduct = {
     required: true,
   },
 };
-
-module.exports = updateProduct;
+module.exports = getProduct;

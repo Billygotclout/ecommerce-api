@@ -8,6 +8,12 @@ const register = require("./Auth/register");
 const currentUser = require("./Auth/currentUser");
 const getAllUsers = require("./Admin/getAllUsers");
 const getAllSellers = require("./Admin/getAllSellers");
+const createProduct = require("./Products/createProduct");
+const getAllProducts = require("./Products/getAllProducts");
+const getProduct = require("./Products/getProduct");
+const updateProduct = require("./Products/updateProduct");
+const deleteProduct = require("./Products/deleteProduct");
+const searchProduct = require("./Products/searchProduct");
 
 const options = {
   swaggerDefinition: {
@@ -45,20 +51,39 @@ const options = {
       },
     ],
     paths: {
-      "api/admin/get-all-users": {
+      "/api/admin/get-all-users": {
         get: getAllUsers,
       },
-      "api/admin/get-all-sellers": {
+      "/api/admin/get-all-sellers": {
         get: getAllSellers,
       },
-      "api/auth/login": {
+      "/api/auth/login": {
         post: login,
       },
       "/api/auth/register": {
         post: register,
       },
-      "api/auth/current-user": {
+      "/api/auth/current-user": {
         post: currentUser,
+      },
+      "/api/product/get-products": {
+        get: getAllProducts,
+      },
+      "/api/product/create-product": {
+        post: createProduct,
+      },
+
+      "/api/product/get-product/:id": {
+        get: getProduct,
+      },
+      "/api/product/update-product/:id": {
+        patch: updateProduct,
+      },
+      "/api/product/delete-product/:id": {
+        delete: deleteProduct,
+      },
+      "/api/product/search-product?keyword=:product": {
+        get: searchProduct,
       },
     },
     components: {
