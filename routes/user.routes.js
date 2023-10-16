@@ -17,7 +17,5 @@ router.post("/forgot-password", forgotPassword);
 router.post("/reset-password", resetPassword);
 router.get("/current-user", validateToken, currentUser);
 router.use(validateToken);
-router.route("/admin").get(roleChecker("admin"), (req, res) => {
-  res.json("Admin");
-});
+
 module.exports = router;

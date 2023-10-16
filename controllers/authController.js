@@ -6,18 +6,24 @@ const nodemailer = require("nodemailer");
 const { userSchema } = require("../helpers/validation");
 const CustomError = require("../utils/CustomError");
 const sendMail = require("../helpers/mailer");
+const logger = require("../helpers/logger");
 const dotenv = require("dotenv").config();
-const register = asyncHandler(async (req, res) => {
+const register = asyncHandler(async (req, res, next) => {
   try {
-    const { firstName, lastName, username, email, password } = req.body;
+    const { firstName, lastName, username, email, password, role } = req.body;
     const { error } = userSchema.validate(req.body, { abortEarly: false });
+
     if (error) {
-      throw new CustomError(error.details[0].message, 400);
+      const errorMessage = error.details[0].message;
+
+      logger.error(errorMessage);
+      throw new CustomError(errorMessage, 400);
     }
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      throw new CustomError("User already existS, please log in", 400);
+      logger.error("User already exists");
+      throw new CustomError("User already exists, please log in", 400);
     }
     const hashPassword = await bcrypt.hash(password, 10);
 
@@ -27,14 +33,16 @@ const register = asyncHandler(async (req, res) => {
       username,
       email,
       password: hashPassword,
+      role,
     });
-
+    logger.info(`User '${username}' successfully registered.`);
     res.status(201).json({
       message: "User successfully created",
       data: user,
     });
   } catch (error) {
-    console.log(error);
+    logger.error(`Error during user registration: ${error.message}`);
+    next(error.message);
   }
 });
 const login = asyncHandler(async (req, res) => {
@@ -54,30 +62,48 @@ const login = asyncHandler(async (req, res) => {
           },
           process.env.TOKEN_SECRET
         );
+        logger.info(`User '${username}' successfully logged in.`);
         res.status(200).json({
           message: "User successfully logged in",
           token: accessToken,
           data: user,
         });
       } else {
+        logger.error(
+          `Failed login attempt for user '${username}': Incorrect password.`
+        );
         throw new CustomError(
           "Please double-check your password and try again",
           400
         );
       }
     } else {
+      logger.error(
+        `Login attempt failed for user '${username}': User not found.`
+      );
       throw new CustomError("Sorry we couldn't find that user", 404);
     }
   } catch (error) {
-    console.log(error);
+    logger.error(`Error during login for user '${username}': ${error.message}`);
   }
 });
 const currentUser = async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
-    res.status(200).json({ message: "User Successfully fetched", data: user });
+    if (user) {
+      logger.info(`User '${user.username}' successfully fetched.`);
+      res
+        .status(200)
+        .json({ message: "User successfully fetched", data: user });
+    } else {
+      logger.error(
+        `User with ID '${req.user.id}' not found during current user retrieval.`
+      );
+      res.status(404).json({ message: "User not found" });
+    }
   } catch (error) {
-    console.log(error);
+    logger.error(`Error during current user retrieval: ${error.message}`);
+    console.error(error);
   }
 };
 const forgotPassword = async (req, res) => {
@@ -87,13 +113,15 @@ const forgotPassword = async (req, res) => {
   const { email } = req.body;
   // Generate a JWT token for password reset
   const resetToken = generateToken({ email });
+
+  logger.info(`Password reset token generated for email: ${email}`);
   // Send the password reset link to the user's email
   const sendPasswordMail = await sendMail(
     email,
     "Password Reset",
     `Please click the following link to reset your password: ${resetToken}`
   );
-
+  logger.info(`Password reset email sent to email: ${email}`);
   res.json({ message: "Password reset email sent", data: sendPasswordMail });
 };
 const resetPassword = async (req, res) => {
@@ -101,6 +129,7 @@ const resetPassword = async (req, res) => {
     const { token, newPassword } = req.body;
     jwt.verify(token, process.env.TOKEN_SECRET, async (err, decoded) => {
       if (err) {
+        logger.error(`Token verification failed: ${err}`);
         console.error(err);
         res.status(400).json({ message: "Invalid or expired token" });
       } else {
@@ -114,13 +143,18 @@ const resetPassword = async (req, res) => {
           { new: true }
         );
         if (!user) {
+          logger.error(
+            `User not found during password reset for email: ${email}`
+          );
           return res.status(404).json({ message: "User not found" });
         }
+        logger.info(`Password reset successful for email: ${email}`);
         res.json({ message: "Password reset successful", data: user });
       }
     });
   } catch (error) {
-    console.log(error);
+    logger.error(`Error during password reset: ${error.message}`);
+    console.error(error);
   }
 };
 
