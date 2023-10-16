@@ -29,7 +29,8 @@
     "stripe": "^12.8.0",
     "supertest": "^6.3.3",
     "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^5.0.0"
+    "swagger-ui-express": "^5.0.0",
+    "winston": "^3.11.0"
   },
   "devDependencies": {
     "@types/jest": "^29.5.5",

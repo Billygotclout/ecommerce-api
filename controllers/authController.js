@@ -6,17 +6,20 @@ const nodemailer = require("nodemailer");
 const { userSchema } = require("../helpers/validation");
 const CustomError = require("../utils/CustomError");
 const sendMail = require("../helpers/mailer");
+const logger = require("../helpers/logger");
 const dotenv = require("dotenv").config();
 const register = asyncHandler(async (req, res, next) => {
   try {
     const { firstName, lastName, username, email, password, role } = req.body;
     const { error } = userSchema.validate(req.body, { abortEarly: false });
     if (error) {
+      logger.error(error.details[0].message);
       throw new CustomError(error.details[0].message, 400);
     }
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
+      logger.error("User already exists");
       throw new CustomError("User already exists, please log in", 400);
     }
     const hashPassword = await bcrypt.hash(password, 10);
@@ -34,6 +37,7 @@ const register = asyncHandler(async (req, res, next) => {
       message: "User successfully created",
       data: user,
     });
+    logger.info("User successfully created");
   } catch (error) {
     next(error);
   }
@@ -121,7 +125,7 @@ const resetPassword = async (req, res) => {
       }
     });
   } catch (error) {
-    console.log(error);
+    logger.error(error.message);
   }
 };
 
