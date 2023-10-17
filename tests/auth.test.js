@@ -39,11 +39,12 @@ describe("Authentication flow", () => {
     expect(response.body.message).toBe("User successfully logged in");
     token = response.body.token;
   }, 30000);
+
   test("it should get user details", async () => {
     const response = await request(app)
       .get("/api/auth/current-user")
       .set("Authorization", `Bearer ${token}`);
     expect(response.status).toBe(200);
-    expect(response.body.message).toBe("User Successfully fetched");
+    expect(response.body.message).toBe("User successfully fetched");
   }, 30000);
 });

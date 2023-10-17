@@ -8,7 +8,7 @@ const {
   updateProduct,
   deleteProduct,
   searchProduct,
-} = require("../controllers/owners/productController");
+} = require("../controllers/sellers/productController");
 
 const multer = require("multer");
 const pay = require("../controllers/customers/paymentController");
