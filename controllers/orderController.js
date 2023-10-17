@@ -1,11 +1,13 @@
 const Order = require("../models/Order");
-const Product = require("../models/Product");
+const logger = require("../helpers/logger");
+const CustomError = require("../utils/CustomError");
 
 const viewOrders = async (req, res) => {
   const order = await Order.find({ user_id: req.user.id }).populate({
     path: "product_id",
     model: "Product",
   });
+  logger.info("Orders have been successfully retrieved");
   res.status(200).json({ message: "Orders Successfully Fetched", data: order });
 };
 const createOrder = async (req, res) => {
@@ -15,9 +17,10 @@ const createOrder = async (req, res) => {
     product_id,
   });
   if (!createdOrder) {
-    res.status(400);
-    throw new Error("Order not created, please try again");
+    logger.error("Order creation failed  successfully.");
+    throw new CustomError("Order not created, please try again", 400);
   }
+  logger.info(`Order with ${createdOrder._id} has been created successfully`);
   res
     .status(201)
     .json({ message: "Order Successfully Created", data: createdOrder });
@@ -26,8 +29,7 @@ const deleteOrder = async (req, res) => {
   const order = await Order.findById(req.params.id);
 
   if (!order) {
-    res.status(404);
-    throw new Error("Sorry, we couldn't find that order");
+    throw new CustomError("Sorry, we couldn't find that order", 404);
   }
   if (order.user_id.toString() !== req.user.id) {
     res.status(403);
@@ -40,4 +42,23 @@ const deleteOrder = async (req, res) => {
     message: "Successfully Deleted Order",
   });
 };
-module.exports = { viewOrders, createOrder, deleteOrder };
+const updateOrderStatus = async () => {
+  const order = Order.findById(req.params.id);
+  if (!order) {
+    logger.error("Order could not be found");
+    throw new CustomError("Sorry, we couldn't find that order", 404);
+  }
+  const updatedOrderStatus = await Order.findByIdAndUpdate(
+    req.params.id,
+    req.body,
+    {
+      new: true,
+    }
+  );
+  logger.info(`Order with ${order._id} updated successfully`);
+  res.status(200).json({
+    message: `Order status is now ${updatedOrderStatus.status}`,
+    data: updatedOrderStatus,
+  });
+};
+module.exports = { viewOrders, createOrder, deleteOrder, updateOrderStatus };

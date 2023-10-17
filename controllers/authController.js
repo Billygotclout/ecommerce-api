@@ -45,11 +45,11 @@ const register = asyncHandler(async (req, res, next) => {
     next(error.message);
   }
 });
-const login = asyncHandler(async (req, res) => {
+const login = asyncHandler(async (req, res, next) => {
+  const { username, password } = req.body;
   try {
-    const { username, password } = req.body;
-
     const user = await User.findOne({ username });
+
     if (user) {
       if (await bcrypt.compareSync(password, user.password)) {
         const accessToken = jwt.sign(
@@ -84,7 +84,7 @@ const login = asyncHandler(async (req, res) => {
       throw new CustomError("Sorry we couldn't find that user", 404);
     }
   } catch (error) {
-    logger.error(`Error during login for user '${username}': ${error.message}`);
+    next(error);
   }
 });
 const currentUser = async (req, res) => {
