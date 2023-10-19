@@ -4,7 +4,11 @@ const deleteProduct = {
   operationId: "deleteProducts",
   security: [
     {
-      bearerAuth: [],
+      bearerAuth: {
+        type: "http",
+        scheme: "bearer",
+        bearerFormat: "JWT",
+      },
     },
   ],
   requestBody: {

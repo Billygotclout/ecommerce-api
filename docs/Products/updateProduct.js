@@ -4,7 +4,11 @@ const updateProduct = {
   operationId: "updateProducts",
   security: [
     {
-      bearerAuth: [],
+      bearerAuth: {
+        type: "http",
+        scheme: "bearer",
+        bearerFormat: "JWT",
+      },
     },
   ],
   requestBody: {

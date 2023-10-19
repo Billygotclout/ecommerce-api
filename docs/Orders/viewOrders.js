@@ -1,7 +1,8 @@
-const getAllProducts = {
-  tags: ["Products"],
-  description: "Get products",
-  operationId: "getProducts",
+const viewOrders = {
+  tags: ["Orders"],
+  description: "View an order for the useer",
+  operationId: "viewOrder",
+
   security: [
     {
       bearerAuth: {
@@ -18,5 +19,4 @@ const getAllProducts = {
     required: true,
   },
 };
-
-module.exports = getAllProducts;
+module.exports = viewOrders;

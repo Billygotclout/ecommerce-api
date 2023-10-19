@@ -1,7 +1,8 @@
-const getAllProducts = {
-  tags: ["Products"],
-  description: "Get products",
-  operationId: "getProducts",
+const deleteOrder = {
+  tags: ["Orders"],
+  description: "Delete user order",
+  operationId: "deleteOrder",
+
   security: [
     {
       bearerAuth: {
@@ -19,4 +20,4 @@ const getAllProducts = {
   },
 };
 
-module.exports = getAllProducts;
+module.exports = deleteOrder;

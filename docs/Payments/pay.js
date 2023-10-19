@@ -1,7 +1,8 @@
-const getAllProducts = {
-  tags: ["Products"],
-  description: "Get products",
-  operationId: "getProducts",
+const pay = {
+  tags: ["Payments"],
+  description: "Pay for an order",
+  operationId: "pay",
+
   security: [
     {
       bearerAuth: {
@@ -18,5 +19,4 @@ const getAllProducts = {
     required: true,
   },
 };
-
-module.exports = getAllProducts;
+module.exports = pay;

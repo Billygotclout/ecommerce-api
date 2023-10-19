@@ -1,7 +1,8 @@
-const getAllProducts = {
-  tags: ["Products"],
-  description: "Get products",
-  operationId: "getProducts",
+const viewWishlist = {
+  tags: ["Wishlist"],
+  description: "Add product to wishlist for the user",
+  operationId: "addToWishlist",
+
   security: [
     {
       bearerAuth: {
@@ -19,4 +20,4 @@ const getAllProducts = {
   },
 };
 
-module.exports = getAllProducts;
+module.exports = viewWishlist;
