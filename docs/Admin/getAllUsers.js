@@ -5,7 +5,11 @@ const getAllUsers = {
 
   security: [
     {
-      bearerAuth: [],
+      bearerAuth: {
+        type: "http",
+        scheme: "bearer",
+        bearerFormat: "JWT",
+      },
     },
   ],
   requestBody: {

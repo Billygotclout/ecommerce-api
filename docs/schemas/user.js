@@ -22,11 +22,6 @@ const User = {
       description: "Unencrypted password",
       example: "1234!Dse",
     },
-    role: {
-      type: "string",
-      enum: ["seller", "customer", "admin"],
-      example: "seller",
-    },
   },
 };
 module.exports = User;

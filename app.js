@@ -2,7 +2,6 @@ const express = require("express");
 const app = express();
 const swagger = require("./docs/apiDocs");
 const path = require("path");
-const errorHandler = require("./middleware/errorHandler");
 
 app.use(express.json());
 swagger(app);

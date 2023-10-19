@@ -4,7 +4,11 @@ const getProduct = {
   operationId: "getProducts",
   security: [
     {
-      bearerAuth: [],
+      bearerAuth: {
+        type: "http",
+        scheme: "bearer",
+        bearerFormat: "JWT",
+      },
     },
   ],
   requestBody: {

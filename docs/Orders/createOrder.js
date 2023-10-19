@@ -1,7 +1,8 @@
-const createProduct = {
-  tags: ["Products"],
-  description: "Create a product",
-  operationId: "createProduct",
+const createOrder = {
+  tags: ["Orders"],
+  description: "Create an order for the user",
+  operationId: "createOrder",
+
   security: [
     {
       bearerAuth: {
@@ -14,12 +15,11 @@ const createProduct = {
   requestBody: {
     content: {
       "application/json": {
-        schema: {
-          $ref: "#/components/schemas/Products",
-        },
+        $ref: "#/components/schemas/Orders",
       },
     },
     required: true,
   },
 };
-module.exports = createProduct;
+
+module.exports = createOrder;
